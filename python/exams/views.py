@@ -137,7 +137,7 @@ def do_next(request: HttpRequest, book_id: int, exam_type: ExamTypes) -> HttpRes
     elif user.username == 'teeroz':
         a_exam.sync_memories()
     else:
-        a_exam.sync_memories(20)
+        a_exam.sync_memories(10)
     count_test_words = a_exam.count_unlocked_words()
     if count_test_words <= 0:
         return start(request, a_exam)
