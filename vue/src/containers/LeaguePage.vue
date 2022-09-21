@@ -59,8 +59,9 @@
               <template v-if="player.wins > 0">{{ player.wins }}승</template>
               <template v-if="player.draws > 0">{{ player.draws }}무</template>
               <template v-if="player.loses > 0">{{ player.loses }}패</template>
+              <template v-if="league.win_mode == 'half'"> / {{ player.score }}점</template>
               / {{ player.buchholz }} bh
-              <template v-if="player.all_kill > 0">/ 승자승</template>
+              <template v-if="player.all_kill > 0"> / 승자승</template>
               / {{ player.max_strikes_count }}연승
             </small>
           </div>
@@ -71,7 +72,7 @@
            class="list-group-item list-group-item-action border-left-0 border-right-0 text-center text-primary"
            :class="{'mt-1': players.length <= 0}"
            >
-          <i class="fas fa-user-plus"></i> <strong><span>플레이어 추가하기</span></strong>
+          <i class="fas fa-user-plus"></i> <strong><span> 플레이어 추가하기</span></strong>
         </router-link>
       </div>
 
@@ -90,7 +91,7 @@
            :class="{'mt-1': rounds.length <= 0}"
            @click="startNewRound"
            >
-          <i class="fas fa-trophy"></i> <strong><span>새 라운드 시작하기</span></strong>
+          <i class="fas fa-trophy"></i> <strong><span> 새 라운드 시작하기</span></strong>
         </span>
       </div>
     </the-loading>
