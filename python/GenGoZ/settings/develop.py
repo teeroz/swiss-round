@@ -13,6 +13,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['swiss.teeroz.net']
 
+STATIC_ROOT = os.path.join(BASE_DIR, '.static_root')
+
 """
 LOGGING = {
     'version': 1,
