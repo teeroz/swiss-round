@@ -52,7 +52,7 @@ def calculate_matches_result(matches: List[Match]) -> None:
             match.player2.increase_score(3)
 
 
-def calculate_rankings(players: Set[Player], matches: Set[Match]) -> None:
+def calculate_rankings(league: League, players: Set[Player], matches: Set[Match]) -> None:
     for m_player in players:
         m_player.initialize_ranking()
         m_player.buchholz = sum([opponent.wins * League.win_score + opponent.draws for opponent in m_player.matched])
@@ -60,7 +60,7 @@ def calculate_rankings(players: Set[Player], matches: Set[Match]) -> None:
     # dict_players_by_first
     dict_players_by_first = {}
     for m_player in players:
-        first_value = m_player.get_ranking_first()
+        first_value = m_player.get_ranking_first(league)
         if first_value not in dict_players_by_first:
             dict_players_by_first[first_value] = set()
         dict_players_by_first[first_value].add(m_player)
@@ -98,7 +98,7 @@ def calculate_rankings(players: Set[Player], matches: Set[Match]) -> None:
                 break
 
     sorted_players = sorted(players,
-                            key=lambda p: p.get_ranking_first() + (p.all_kill,) + p.get_ranking_second(),
+                            key=lambda p: p.get_ranking_first(league) + (p.all_kill,) + p.get_ranking_second(),
                             reverse=True)
     for idx, m_player in enumerate(sorted_players):
         m_player.ranking = idx+1

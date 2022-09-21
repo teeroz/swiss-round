@@ -81,8 +81,11 @@ class Player(models.Model):
         self.buchholz = 0
         self.ranking = 0
 
-    def get_ranking_first(self) -> tuple:
-        return not self.is_ghost, self.wins * League.win_score + self.draws, self.buchholz
+    def get_ranking_first(self, league: League) -> tuple:
+        if league.win_mode == 'half':
+            return not self.is_ghost, self.score, self.buchholz
+        else:
+            return not self.is_ghost, self.wins * League.win_score + self.draws, self.buchholz
 
     def get_ranking_second(self) -> tuple:
         return self.max_strikes_count, self.max_strikes_start * -1
