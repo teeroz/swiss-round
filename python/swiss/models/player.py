@@ -22,6 +22,7 @@ class Player(models.Model):
     strikes_start = 0
     max_strikes_count = 0
     max_strikes_start = 0
+    score = 0
 
     matched = set()
     matched_wins = set()
@@ -50,6 +51,7 @@ class Player(models.Model):
         self.matched = set()
         self.matched_wins = set()
         self.matched_loses = set()
+        self.score = 0
 
     def increase_wins(self, opponent) -> None:
         self.wins += 1
@@ -72,6 +74,9 @@ class Player(models.Model):
 
         self.matched_loses.add(opponent)
 
+    def increase_score(self, score) -> None:
+        self.score += score
+
     def initialize_ranking(self) -> None:
         self.buchholz = 0
         self.ranking = 0
@@ -92,7 +97,8 @@ class Player(models.Model):
             'max_strikes_start': self.max_strikes_start,
             'buchholz': self.buchholz,
             'all_kill': self.all_kill,
-            'ranking': self.ranking
+            'ranking': self.ranking,
+            'score': self.score
         })
 
         return to_dict

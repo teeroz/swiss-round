@@ -118,7 +118,7 @@ def v_league(request: HttpRequest) -> HttpResponse:
 
 
 def create_league(user: User, data: dict) -> dict:
-    m_league = lib_league.create(user, data['title'])
+    m_league = lib_league.create(user, data['title'], data['win_mode'])
 
     return model_to_dict(m_league)
 
@@ -355,9 +355,10 @@ def v_a_round(request: HttpRequest, league_id: int, round_id: int) -> HttpRespon
 
 
 def get_round(league_id: int, round_id: int) -> dict:
+    m_league = get_object_or_404(League, pk=league_id)
     m_round = get_object_or_404(Round, pk=round_id, league_id=league_id)
 
-    return {'round': model_to_dict(m_round), 'matches': __get_matches(m_round)}
+    return {'league': model_to_dict(m_league), 'round': model_to_dict(m_round), 'matches': __get_matches(m_round)}
 
 
 def __get_matches(m_round: Round) -> List[dict]:

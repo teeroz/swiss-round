@@ -8,6 +8,7 @@ from swiss.models.user import User
 class League(models.Model):
     user = models.ForeignKey(User, related_name='leagues', on_delete=models.CASCADE)
     title = models.CharField(max_length=32)
+    win_mode = models.CharField(max_length=32, default='')
     create_dt = models.DateTimeField(auto_now_add=True)
     modify_dt = models.DateTimeField(auto_now=True)
 

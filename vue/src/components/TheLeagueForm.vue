@@ -3,8 +3,13 @@
     <form class="container" @submit.prevent="submit">
       <div class="row form-group">
         <label for="exampleInputTitle">제목</label>
-        <input ref="title" type="text" class="form-control" aria-describeBy="TitleHelp" :placeholder="defaultTitle" maxlength="32" v-model="league.title" autofocus>
+        <input ref="title" type="text" class="form-control" aria-describeBy="TitleHelp" :placeholder="defaultTitle" maxlength="32" v-model="league.title" autofocus />
         <small id="TitleHelp" class="form-text text-muted">입력하지 않을 경우 오늘 날짜로 입력됩니다.</small>
+      </div>
+      <div class="row form-check mb-3">
+        <input id="WinMode" type="checkbox" class="form-check-input" value="half" v-model="league.win_mode" />
+        <label class="form-check-label" for="HalfWinMode">판정승 모드</label>
+        <small id="WinModeHelp" class="form-text text-muted">승패를 입력할 때 ½승,½패 상태도 입력할 수 있습니다.</small>
       </div>
       <div class="row form-group">
         <label for="exampleInputTie">순위</label>
@@ -73,6 +78,8 @@ export default {
       if (!this.league.title || this.league.title.length <= 0) {
         this.league.title = this.defaultTitle
       }
+
+      this.league.win_mode = this.league.win_mode ? 'half' : ''
 
       this.submitCallback()
     }

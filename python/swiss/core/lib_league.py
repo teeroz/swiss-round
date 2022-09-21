@@ -6,10 +6,11 @@ from swiss.models.match import Match
 from swiss.models.user import User
 
 
-def create(user: User, title: str) -> League:
+def create(user: User, title: str, win_mode: str) -> League:
     league = League()
     league.user = user
     league.title = title
+    league.win_mode = win_mode;
     league.save()
 
     Player.objects.create(league=league, name='X', is_ghost=True)
@@ -35,6 +36,20 @@ def calculate_matches_result(matches: List[Match]) -> None:
         else:
             match.player2.increase_draws()
             match.player1.increase_draws()
+
+        if match.score1 == 2:
+            match.player1.increase_score(7)
+        elif match.score1 == 1:
+            match.player1.increase_score(4)
+            match.player2.increase_score(2)
+        if match.score2 == 2:
+            match.player2.increase_score(7)
+        elif match.score2 == 1:
+            match.player2.increase_score(4)
+            match.player1.increase_score(2)
+        if match.score1 == 0 and match.score2 == 0:
+            match.player1.increase_score(3)
+            match.player2.increase_score(3)
 
 
 def calculate_rankings(players: Set[Player], matches: Set[Match]) -> None:
