@@ -100,5 +100,11 @@ ENV/
 .mypy_cache/
 db.sqlite3
 
-# Webstorm stuff:
+# Editor directories and files
 .idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
