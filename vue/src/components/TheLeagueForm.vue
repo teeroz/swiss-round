@@ -61,12 +61,6 @@ export default {
     }
   },
 
-  data: function () {
-    return { 
-      editMode: false
-    }
-  },
-
   mounted: function () {
     this.$refs.title.focus()
   },
