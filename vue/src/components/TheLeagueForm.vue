@@ -7,7 +7,7 @@
         <small id="TitleHelp" class="form-text text-muted">입력하지 않을 경우 오늘 날짜로 입력됩니다.</small>
       </div>
       <div class="row form-check mb-3">
-        <input id="WinMode" type="checkbox" class="form-check-input" value="half" v-model="league.win_mode" />
+        <input id="WinMode" type="checkbox" class="form-check-input" value="half" v-model="league.win_mode" :disabled="editMode" />
         <label class="form-check-label" for="HalfWinMode">판정승 모드</label>
         <small id="WinModeHelp" class="form-text text-muted">승패를 입력할 때 ½승,½패 상태도 입력할 수 있습니다.</small>
       </div>
@@ -51,6 +51,10 @@ export default {
       type: String,
       required: true
     },
+    editMode: {
+      type: Boolean,
+      required: false
+    },
     submitCallback: {
       type: Function,
       required: true
@@ -58,7 +62,9 @@ export default {
   },
 
   data: function () {
-    return { }
+    return { 
+      editMode: false
+    }
   },
 
   mounted: function () {

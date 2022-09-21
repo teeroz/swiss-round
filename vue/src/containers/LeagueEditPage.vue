@@ -6,7 +6,9 @@
     <the-league-form
       :league="league"
       :defaultTitle="defaultTitle"
-      :submitCallback="submit"/>
+      :submitCallback="submit"
+      :editMode="true"
+    />
   </div>
 </template>
 
