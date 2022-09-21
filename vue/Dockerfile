@@ -1,5 +1,5 @@
 # build stage
-FROM node:10.15.2-alpine as build-stage
+FROM node:16-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
 RUN yarn install --force
