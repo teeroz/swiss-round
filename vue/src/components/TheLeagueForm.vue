@@ -8,19 +8,24 @@
       </div>
       <div class="row form-check mb-3">
         <input id="WinMode" type="checkbox" class="form-check-input" value="half" v-model="league.win_mode" :disabled="editMode" />
-        <label class="form-check-label" for="HalfWinMode">판정승 모드</label>
+        <label class="form-check-label" for="WinMode">판정승 모드</label>
         <small id="WinModeHelp" class="form-text text-muted">승패를 입력할 때 ½승,½패 상태도 입력할 수 있습니다.</small>
+      </div>
+      <div class="row form-check mb-3">
+        <input id="RankingCriteria" type="checkbox" class="form-check-input" value="winner" v-model="league.ranking_criteria" />
+        <label class="form-check-label" for="RankingCriteria">승자승원칙 우선</label>
+        <small id="RankingCriteriaHelp" class="form-text text-muted">승자승원칙, 부크홀츠 순으로 순위를 결정합니다.</small>
       </div>
       <div class="row form-group">
         <label for="exampleInputTie">순위</label>
         <select class="form-control mb-1" disabled>
-          <option>승수</option>
+          <option>{{ league.win_mode ? '점수' : '승수' }}</option>
         </select>
         <select class="form-control my-1" disabled>
-          <option>부크홀츠</option>
+          <option>{{ league.ranking_criteria ? '승자승원칙' : '부크홀츠' }}</option>
         </select>
         <select class="form-control my-1" disabled>
-          <option>승자승원칙</option>
+          <option>{{ league.ranking_criteria ? '부크홀츠' : '승자승원칙' }}</option>
         </select>
         <select class="form-control my-1" disabled>
           <option>최대연승수</option>
@@ -80,6 +85,7 @@ export default {
       }
 
       this.league.win_mode = this.league.win_mode ? 'half' : ''
+      this.league.ranking_criteria = this.league.ranking_criteria ? 'winner' : ''
 
       this.submitCallback()
     }

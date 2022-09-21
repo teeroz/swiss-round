@@ -6,11 +6,12 @@ from swiss.models.match import Match
 from swiss.models.user import User
 
 
-def create(user: User, title: str, win_mode: str) -> League:
+def create(user: User, title: str, win_mode: str, ranking_criteria: str) -> League:
     league = League()
     league.user = user
     league.title = title
     league.win_mode = win_mode;
+    league.ranking_criteria = ranking_criteria;
     league.save()
 
     Player.objects.create(league=league, name='X', is_ghost=True)
@@ -61,6 +62,7 @@ def calculate_rankings(league: League, players: Set[Player], matches: Set[Match]
     dict_players_by_first = {}
     for m_player in players:
         first_value = m_player.get_ranking_first(league)
+        print(first_value)
         if first_value not in dict_players_by_first:
             dict_players_by_first[first_value] = set()
         dict_players_by_first[first_value].add(m_player)
@@ -98,7 +100,7 @@ def calculate_rankings(league: League, players: Set[Player], matches: Set[Match]
                 break
 
     sorted_players = sorted(players,
-                            key=lambda p: p.get_ranking_first(league) + (p.all_kill,) + p.get_ranking_second(),
+                            key=lambda p: p.get_ranking_first(league) + (p.all_kill,) + p.get_ranking_second(league),
                             reverse=True)
     for idx, m_player in enumerate(sorted_players):
         m_player.ranking = idx+1

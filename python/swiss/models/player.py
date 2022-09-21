@@ -82,13 +82,22 @@ class Player(models.Model):
         self.ranking = 0
 
     def get_ranking_first(self, league: League) -> tuple:
-        if league.win_mode == 'half':
-            return not self.is_ghost, self.score, self.buchholz
+        if league.ranking_criteria == 'winner':
+            if league.win_mode == 'half':
+                return not self.is_ghost, self.score
+            else:
+                return not self.is_ghost, self.wins * League.win_score + self.draws
         else:
-            return not self.is_ghost, self.wins * League.win_score + self.draws, self.buchholz
+            if league.win_mode == 'half':
+                return not self.is_ghost, self.score, self.buchholz
+            else:
+                return not self.is_ghost, self.wins * League.win_score + self.draws, self.buchholz
 
-    def get_ranking_second(self) -> tuple:
-        return self.max_strikes_count, self.max_strikes_start * -1
+    def get_ranking_second(self, league: League) -> tuple:
+        if league.ranking_criteria == 'winner':
+            return self.buchholz, self.max_strikes_count, self.max_strikes_start * -1
+        else:
+            return self.max_strikes_count, self.max_strikes_start * -1
 
     def to_dict(self) -> dict:
         to_dict = model_to_dict(self, exclude="family")
