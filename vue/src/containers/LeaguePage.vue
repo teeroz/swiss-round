@@ -56,9 +56,9 @@
               </span>
             </div>
             <small class="text-muted" v-if="player.wins + player.draws + player.loses > 0">
-              <template v-if="player.wins > 0">{{ player.wins }}승</template>
-              <template v-if="player.draws > 0">{{ player.draws }}무</template>
-              <template v-if="player.loses > 0">{{ player.loses }}패</template>
+              <template v-if="player.wins > 0">{{ player.wins }}승 </template>
+              <template v-if="player.draws > 0">{{ player.draws }}무 </template>
+              <template v-if="player.loses > 0">{{ player.loses }}패 </template>
               <template v-if="league.win_mode == 'half'"> / {{ player.score }}점</template>
               / {{ player.buchholz }} bh
               <template v-if="player.all_kill > 0"> / 승자승</template>

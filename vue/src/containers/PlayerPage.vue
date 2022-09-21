@@ -62,9 +62,9 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <span>승패</span>
               <span class="text-muted">
-                <template v-if="player.wins > 0">{{ player.wins }}승</template>
-                <template v-if="player.draws > 0">{{ player.draws }}무</template>
-                <template v-if="player.loses > 0">{{ player.loses }}패</template>
+                <template v-if="player.wins > 0">{{ player.wins }}승 </template>
+                <template v-if="player.draws > 0">{{ player.draws }}무 </template>
+                <template v-if="player.loses > 0">{{ player.loses }}패 </template>
               </span>
             </li>
             <li v-if="league.win_mode == 'half'" class="list-group-item d-flex justify-content-between align-items-center">
@@ -73,7 +73,7 @@
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <span>부크홀츠</span>
-              <span class="text-muted">{{ player.buchholz }}</span>
+              <span class="text-muted">{{ player.buchholz }} bh</span>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <span>최대연승</span>
