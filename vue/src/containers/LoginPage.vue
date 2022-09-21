@@ -29,8 +29,22 @@
             </div>
           </div>
 
+          <h5 class="card-title">공지</h5>
+          <p class="card-text mb-4">
+            <small>
+              - 예상보다 사용량이 많아서 3개월이 지난 리그 데이타는 삭제할 예정입니다. 이점 양해 부탁드립니다.
+            </small>
+          </p>
+
           <h5 class="card-title">변경사항</h5>
           <p class="card-text mb-4">
+            <small>
+              <strong>v1.5.0</strong>&nbsp;&nbsp;<span class="text-muted">at 2022.08.22</span><br />
+              - 장기의 점수승을 지원하기 위하여 판정승(1/2승) 기능을 추가하였습니다. 이 모드에서는 완승 7점 / 점수승 4점 / 점수패 2점 / 완패 0점의 점수를 부여하며,
+              순위 결정할 때 점수를 최우선순위로 합니다.<br />
+              - 순위 결정할 때 승자승원칙을 우선으로 할 수 있도록 승자승원칙 우선 기능을 추가하였습니다.
+              이 모드에서는 순위를 결정할 때 부크홀츠보다 승자승을 더 우선으로 합니다.<br />
+            </small>
             <small>
               <strong>v1.4.0</strong>&nbsp;&nbsp;<span class="text-muted">at 2019.05.18</span><br />
               - 일반 아이디로 로그인하는 기능을 추가하였습니다. 이 기능을 이용하면 여러명이 로그인하여 함께 사용할 수 있습니다. 단, 비밀번호는 없으니 주의해주세요.<br />
@@ -47,6 +61,7 @@
               - 리그 플레이어 목록에서 경기 시작 전에 승무패 표시하지 않도록 수정 <br />
             </small>
           </p>
+
           <h5 class="card-title">소개</h5>
           <p class="card-text mb-1">
             <small>

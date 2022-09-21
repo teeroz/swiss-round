@@ -62,7 +62,6 @@ def calculate_rankings(league: League, players: Set[Player], matches: Set[Match]
     dict_players_by_first = {}
     for m_player in players:
         first_value = m_player.get_ranking_first(league)
-        print(first_value)
         if first_value not in dict_players_by_first:
             dict_players_by_first[first_value] = set()
         dict_players_by_first[first_value].add(m_player)
