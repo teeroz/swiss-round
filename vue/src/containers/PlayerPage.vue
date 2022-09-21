@@ -67,6 +67,10 @@
                 <template v-if="player.loses > 0">{{ player.loses }}패</template>
               </span>
             </li>
+            <li v-if="league.win_mode == 'half'" class="list-group-item d-flex justify-content-between align-items-center">
+              <span>점수</span>
+              <span class="text-muted">{{ player.score }}점</span>
+            </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <span>부크홀츠</span>
               <span class="text-muted">{{ player.buchholz }}</span>
@@ -97,9 +101,26 @@
               >
               <span @click="goPlayerPage(match.opponent)">
                 <small>vs</small> {{ match.opponent.name }} 
-                <small class="text-muted">{{ match.opponent.wins }}승</small>
+                <small class="text-muted">
+                  <template v-if="league.win_mode == 'half'">{{ match.opponent.score }}점</template>
+                  <template v-else>{{ match.opponent.wins }}승</template>
+                </small>
               </span>
-              <button 
+
+              <button v-if="league.win_mode == 'half'"
+                type="button"
+                class="btn btn-sm ml-1"
+                :class="{'btn-secondary': match.result == 'D',
+                         'btn-primary': match.result == 'W' && !match.half_win,
+                         'btn-outline-primary': match.result == 'W' && match.half_win,
+                         'btn-danger': match.result == 'L' && !match.half_win,
+                         'btn-outline-danger': match.result == 'L' && match.half_win}"
+                >
+                <template v-if="match.result == 'W'">{{ match.half_win ? '½' : '' }}승</template>
+                <template v-else-if="match.result == 'L'">{{ match.half_win ? '½' : '' }}패</template>
+                <template v-else>무</template>
+              </button>
+              <button v-else
                 type="button" 
                 class="btn btn-sm ml-1"
                 :class="{'btn-secondary': match.result == 'D', 
@@ -124,6 +145,7 @@ export default {
 
   data: function () {
     return {
+      league: { win_mode: '' },
       player: { id: 0, name: '', family: [] },
       matches: []
     }
@@ -132,6 +154,7 @@ export default {
   created: function () {
     this.$axios.swiss.get(`league/${this.$route.params.league_id}/player/${this.$route.params.player_id}`)
       .then(res => {
+        this.league = res.data.league
         this.player = res.data.player
         this.matches = res.data.matches
         this.$refs.loading.stop()

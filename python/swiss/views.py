@@ -245,6 +245,8 @@ def v_a_player(request: HttpRequest, league_id: int, player_id: int) -> HttpResp
 def get_player(league_id: int, player_id: int) -> dict:
     m_this_player = get_object_or_404(Player, pk=player_id, league_id=league_id)  # type: Player
 
+    m_league = get_object_or_404(League, pk=league_id)
+
     players, matches = m_this_player.league.get_players_and_matches()  # type: Set[Player], List[Match]
     lib_league.calculate_matches_result(matches)
     lib_league.calculate_rankings(players, matches)
@@ -263,6 +265,7 @@ def get_player(league_id: int, player_id: int) -> dict:
             else (m_match.player1, m_match.score2, m_match.score1)
         dict_match['opponent'] = m_opponent.to_dict()
         dict_match['result'] = 'W' if my_score > your_score else ('L' if my_score < your_score else 'D')
+        dict_match['half_win'] = True if my_score == 1 or your_score == 1 else False
 
         dict_matches_history.append(dict_match)
 
@@ -276,7 +279,7 @@ def get_player(league_id: int, player_id: int) -> dict:
         dict_family.append(m_family_member.to_dict())
     dict_this_player['family'] = dict_family
 
-    return {'player': dict_this_player, 'matches': dict_matches_history}
+    return {'league': model_to_dict(m_league), 'player': dict_this_player, 'matches': dict_matches_history}
 
 
 def edit_player(league_id: int, player_id: int, data: dict) -> dict:

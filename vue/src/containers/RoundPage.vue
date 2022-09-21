@@ -142,6 +142,7 @@ export default {
 
   data: function () {
     return {
+      league: { win_mode: '' },
       round: { no: '' },
       matches: [],
       matchesByTable: [],
@@ -155,6 +156,7 @@ export default {
         // matches 에 no 추가 
         const matches = res.data.matches;
         let no = 1;
+        // eslint-disable-next-line
         for (const match of matches) {
           match.no = no;
           no += 1;
@@ -170,6 +172,7 @@ export default {
         const matches1 = matches.slice(0, parseInt((matches.length + 1) / 2, 10));
         const matches2 = matches.slice(parseInt((matches.length + 1) / 2, 10));
         const matchesByTable = [];
+        // eslint-disable-next-line
         for (const k in matches1) {
           matchesByTable.push(matches1[k]);
           if (matches2.length > k) {
@@ -239,6 +242,7 @@ export default {
 
     checkIsComplete: function () {
       let isComplete = true
+      // eslint-disable-next-line
       for (const key in this.matches) {
         const match = this.matches[key]
         if (match.score1 === match.score2) {
