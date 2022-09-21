@@ -23,33 +23,65 @@
           <div class="d-flex justify-content-center">
             <div class="col-6 text-right">
               <span @click="goPlayerPage(match.player1)">
-                <small>{{ match.player1.wins }}승</small> {{ match.player1.name }}
+                <template v-if="league.win_mode == 'half'"><small>{{ match.player1.score }}점</small> {{ match.player1.name }} </template>
+                <template v-else><small>{{ match.player1.wins }}승</small> {{ match.player1.name }} </template>
               </span>
-              <button 
-                type="button" 
-                class="btn btn-sm ml-1"
-                :class="{'btn-secondary': match.score1 == match.score2, 'btn-primary': match.score1 > match.score2, 'btn-danger': match.score1 < match.score2}"
-                @click="updateScore(match, match.score1 ? 0 : 1, 0)"
-                >
-                <template v-if="match.score1 > match.score2">승</template>
-                <template v-else-if="match.score1 < match.score2">패</template>
-                <template v-else>무</template>
-              </button>
+
+              <template v-if="league.win_mode == 'half'">
+                <button 
+                  type="button" 
+                  class="btn btn-sm ml-1"
+                  :class="{'btn-secondary': match.score1 == match.score2, 'btn-primary': match.score1 == 2, 'btn-outline-primary': match.score1 == 1, 'btn-danger': match.score2 == 2, 'btn-outline-danger': match.score2 == 1}"
+                  @click="updateScore(match, match.score2 == 0 ? Math.min(match.score1 + 1, 2) : 0, match.score2 == 0 ? 0 : match.score2 - 1)"
+                  >
+                  <template v-if="match.score1 > match.score2">{{ match.score1 == 1 ? '½' : '' }}승</template>
+                  <template v-else-if="match.score1 < match.score2">{{ match.score2 == 1 ? '½' : '' }}패</template>
+                  <template v-else>무</template>
+                </button>
+              </template>
+              <template v-else>
+                <button 
+                  type="button" 
+                  class="btn btn-sm ml-1"
+                  :class="{'btn-secondary': match.score1 == match.score2, 'btn-primary': match.score1 > match.score2, 'btn-danger': match.score1 < match.score2}"
+                  @click="updateScore(match, match.score1 ? 0 : 1, 0)"
+                  >
+                  <template v-if="match.score1 > match.score2">승</template>
+                  <template v-else-if="match.score1 < match.score2">패</template>
+                  <template v-else>무</template>
+                </button>
+              </template>
             </div>
             <div><small>#{{ index + 1 }}</small></div>
             <div class="col-6 text-left">
-              <button 
-                type="button" 
-                class="btn btn-sm mr-1"
-                :class="{'btn-secondary': match.score2 == match.score1, 'btn-primary': match.score2 > match.score1, 'btn-danger': match.score2 < match.score1}"
-                @click="updateScore(match, 0, match.score2 ? 0 : 1)"
-                >
-                <template v-if="match.score2 > match.score1">승</template>
-                <template v-else-if="match.score2 < match.score1">패</template>
-                <template v-else>무</template>
-              </button>
+              <template v-if="league.win_mode == 'half'">
+                <button 
+                  type="button" 
+                  class="btn btn-sm ml-1"
+                  :class="{'btn-secondary': match.score1 == match.score2, 'btn-primary': match.score2 == 2, 'btn-outline-primary': match.score2 == 1, 'btn-danger': match.score1 == 2, 'btn-outline-danger': match.score1 == 1}"
+                  @click="updateScore(match, match.score1 == 0 ? 0 : match.score1 - 1, match.score1 == 0 ? Math.min(match.score2 + 1, 2) : 0)"
+                  >
+                  <template v-if="match.score2 > match.score1">{{ match.score2 == 1 ? '½' : '' }}승</template>
+                  <template v-else-if="match.score2 < match.score1">{{ match.score1 == 1 ? '½' : '' }}패</template>
+                  <template v-else>무</template>
+                </button>
+              </template>
+              <template v-else>
+                <button 
+                  type="button" 
+                  class="btn btn-sm mr-1"
+                  :class="{'btn-secondary': match.score2 == match.score1, 'btn-primary': match.score2 > match.score1, 'btn-danger': match.score2 < match.score1}"
+                  @click="updateScore(match, 0, match.score2 ? 0 : 1)"
+                  >
+                  <template v-if="match.score2 > match.score1">승</template>
+                  <template v-else-if="match.score2 < match.score1">패</template>
+                  <template v-else>무</template>
+                </button>
+              </template>
+
               <span @click="goPlayerPage(match.player2)">
-                {{ match.player2.name }} <small>{{ match.player2.wins }}승</small>
+                <template v-if="league.win_mode == 'half'"> {{ match.player2.name }} <small>{{ match.player2.score }}점</small></template>
+                <template v-else> {{ match.player2.name }} <small>{{ match.player2.wins }}승</small></template>
               </span>
             </div>
           </div>
@@ -63,7 +95,7 @@
           :class="{'btn-primary': isComplete, 'btn-secondary': !isComplete}"
           @click="nextRound"
           :disabled="!isComplete">
-          <i class="fas fa-arrow-right"></i> <strong><span>다음 라운드 시작하기</span></strong>
+          <i class="fas fa-arrow-right"></i> <strong><span> 다음 라운드 시작하기</span></strong>
         </button>
       </div>
     </the-loading>
@@ -128,6 +160,7 @@ export default {
           no += 1;
         }
 
+        this.league = res.data.league
         this.round = res.data.round
         this.matches = res.data.matches
         this.checkIsComplete()
