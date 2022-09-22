@@ -65,7 +65,7 @@ def calculate_matches_result(m_league: League, matches: List[Match]) -> None:
 def calculate_rankings(league: League, players: List[Player], matches: List[Match]) -> None:
     for m_player in players:
         m_player.initialize_ranking()
-        m_player.buchholz = sum([opponent.wins * League.win_score + opponent.draws for opponent in m_player.matched])
+        m_player.buchholz = sum([opponent.score for opponent in m_player.matched])
 
     # dict_players_by_first
     dict_players_by_first = {}
