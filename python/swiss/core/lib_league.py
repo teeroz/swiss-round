@@ -1,4 +1,4 @@
-from typing import List, Set
+from typing import List
 
 from swiss.models.league import League
 from swiss.models.player import Player
@@ -10,8 +10,8 @@ def create(user: User, title: str, win_mode: str, ranking_criteria: str) -> Leag
     league = League()
     league.user = user
     league.title = title
-    league.win_mode = win_mode;
-    league.ranking_criteria = ranking_criteria;
+    league.win_mode = win_mode
+    league.ranking_criteria = ranking_criteria
     league.save()
 
     Player.objects.create(league=league, name='X', is_ghost=True)
@@ -19,7 +19,7 @@ def create(user: User, title: str, win_mode: str, ranking_criteria: str) -> Leag
     return league
 
 
-def calculate_matches_result(matches: List[Match]) -> None:
+def calculate_matches_result(m_league: League, matches: List[Match]) -> None:
     for match in matches:
         match.player1.initialize_results()
         match.player2.initialize_results()
@@ -38,22 +38,31 @@ def calculate_matches_result(matches: List[Match]) -> None:
             match.player2.increase_draws()
             match.player1.increase_draws()
 
-        if match.score1 == 2:
-            match.player1.increase_score(7)
-        elif match.score1 == 1:
-            match.player1.increase_score(4)
-            match.player2.increase_score(2)
-        if match.score2 == 2:
-            match.player2.increase_score(7)
-        elif match.score2 == 1:
-            match.player2.increase_score(4)
-            match.player1.increase_score(2)
-        if match.score1 == 0 and match.score2 == 0:
-            match.player1.increase_score(3)
-            match.player2.increase_score(3)
+        if m_league.win_mode == 'half':
+            if match.score1 == 2:
+                match.player1.increase_score(7)
+            elif match.score1 == 1:
+                match.player1.increase_score(4)
+                match.player2.increase_score(2)
+            if match.score2 == 2:
+                match.player2.increase_score(7)
+            elif match.score2 == 1:
+                match.player2.increase_score(4)
+                match.player1.increase_score(2)
+            if match.score1 == 0 and match.score2 == 0:
+                match.player1.increase_score(3)
+                match.player2.increase_score(3)
+        else:
+            if match.score1 > match.score2:
+                match.player1.increase_score(3)
+            elif match.score2 > match.score1:
+                match.player2.increase_score(3)
+            else:
+                match.player1.increase_score(1)
+                match.player2.increase_score(1)
 
 
-def calculate_rankings(league: League, players: Set[Player], matches: Set[Match]) -> None:
+def calculate_rankings(league: League, players: List[Player], matches: List[Match]) -> None:
     for m_player in players:
         m_player.initialize_ranking()
         m_player.buchholz = sum([opponent.wins * League.win_score + opponent.draws for opponent in m_player.matched])

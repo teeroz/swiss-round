@@ -1,7 +1,7 @@
 import json
 import urllib.request
 import urllib.parse
-from typing import List, Set
+from typing import List
 
 import os
 from django.core.exceptions import ObjectDoesNotExist
@@ -172,8 +172,8 @@ def get_league(user: User, league_id: int) -> dict:
 
 
 def __get_players(m_league: League) -> List[dict]:
-    players, matches = m_league.get_players_and_matches()  # type: Set[Player], List[Match]
-    lib_league.calculate_matches_result(matches)
+    players, matches = m_league.get_players_and_matches()  # type: List[Player], List[Match]
+    lib_league.calculate_matches_result(m_league, matches)
     lib_league.calculate_rankings(m_league, players, matches)
 
     players = sorted(players, key=lambda p: p.ranking)  # type: List[Player]
@@ -246,11 +246,9 @@ def v_a_player(request: HttpRequest, league_id: int, player_id: int) -> HttpResp
 def get_player(league_id: int, player_id: int) -> dict:
     m_this_player = get_object_or_404(Player, pk=player_id, league_id=league_id)  # type: Player
 
-    m_league = get_object_or_404(League, pk=league_id)
-
-    players, matches = m_this_player.league.get_players_and_matches()  # type: Set[Player], List[Match]
-    lib_league.calculate_matches_result(matches)
-    lib_league.calculate_rankings(m_league, players, matches)
+    players, matches = m_this_player.league.get_players_and_matches()  # type: List[Player], List[Match]
+    lib_league.calculate_matches_result(m_this_player.league, matches)
+    lib_league.calculate_rankings(m_this_player.league, players, matches)
 
     m_this_player = [m_player for m_player in players if m_player.id == player_id][0]
 
@@ -280,7 +278,7 @@ def get_player(league_id: int, player_id: int) -> dict:
         dict_family.append(m_family_member.to_dict())
     dict_this_player['family'] = dict_family
 
-    return {'league': model_to_dict(m_league), 'player': dict_this_player, 'matches': dict_matches_history}
+    return {'league': model_to_dict(m_this_player.league), 'player': dict_this_player, 'matches': dict_matches_history}
 
 
 def edit_player(league_id: int, player_id: int, data: dict) -> dict:
@@ -362,12 +360,17 @@ def get_round(league_id: int, round_id: int) -> dict:
     m_league = get_object_or_404(League, pk=league_id)
     m_round = get_object_or_404(Round, pk=round_id, league_id=league_id)
 
-    return {'league': model_to_dict(m_league), 'round': model_to_dict(m_round), 'matches': __get_matches(m_round)}
+    return {
+        'league': model_to_dict(m_league),
+        'round': model_to_dict(m_round),
+        'matches': __get_matches(m_league, m_round)
+    }
 
 
-def __get_matches(m_round: Round) -> List[dict]:
-    players, matches = m_round.league.get_players_and_matches()  # type: Set[Player], List[Match]
-    lib_league.calculate_matches_result([m for m in matches if m.round_id < m_round.id])
+def __get_matches(m_league: League, m_round: Round) -> List[dict]:
+    players, matches = m_round.league.get_players_and_matches()  # type: List[Player], List[Match]
+    # noinspection PyTypeChecker
+    lib_league.calculate_matches_result(m_league, [m for m in matches if m.round_id < m_round.id])
 
     result = []
     matches = [m for m in matches if m.round_id == m_round.id]
