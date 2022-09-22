@@ -19,7 +19,7 @@ def start_new_round(m_league: League) -> Optional[Round]:
 
     for player1, player2 in new_matches:
         Match.objects.create(league=m_league, round=m_round, player1=player1, player2=player2,
-                             score1=1 if player2.is_ghost is True else 0)
+                             score1=(2 if m_league.win_mode == 'half' else 1) if player2.is_ghost is True else 0)
 
     return m_round
 
@@ -108,7 +108,7 @@ def _choose_first_player(players: Set[Player]) -> Optional[Player]:
 
     sorted_players = sorted(players,
                             # key=lambda p: (p.wins, len(p.matched_same), len(p.matched_lower), random.random()),
-                            key=lambda p: (p.wins, random.random()),
+                            key=lambda p: (p.score, random.random()),
                             reverse=True)
     return sorted_players[0]
 
@@ -136,25 +136,25 @@ def _choose_second_player(player: Player, players: Set[Player]) -> Optional[Play
 
     sorted_players = sorted(candidates,
                             # key=lambda p: (p.wins, len(p.matched_same), len(p.matched_lower), random.random()),
-                            key=lambda p: (p.wins, random.random()),
+                            key=lambda p: (p.score, random.random()),
                             reverse=True)
     return sorted_players[0]
 
 
 def _calculate_matched_others(players: Set[Player]) -> None:
-    # players_by_wins 승수별 플레이어 목록
-    players_by_wins = {}
+    # players_by_score 점수별 플레이어 목록
+    players_by_score = {}
     for player in players:
-        if player.wins not in players_by_wins:
-            players_by_wins[player.wins] = set()
-        players_by_wins[player.wins].add(player)
+        if player.score not in players_by_score:
+            players_by_score[player.score] = set()
+        players_by_score[player.score].add(player)
 
-    for (wins, players) in players_by_wins.items():
+    for (score, players) in players_by_score.items():
         # players_lower 바로 밑의 승수 플레이어 목록
         players_lower = set()
-        for lower_wins in range(wins-1, -1, -1):
-            if lower_wins in players_by_wins:
-                players_lower = players_by_wins[lower_wins]
+        for lower_score in range(score-1, -1, -1):
+            if lower_score in players_by_score:
+                players_lower = players_by_score[lower_score]
                 break
 
         # matched_same & matched_lower 계산
