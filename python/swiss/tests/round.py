@@ -2,7 +2,7 @@ import random
 
 from django.test import TestCase
 
-from swiss.core import lib_round
+from swiss.core import lib_round, lib_league
 from swiss.models.league import League
 from swiss.models.player import Player
 from swiss.models.round import Round
@@ -56,9 +56,7 @@ class Tests(TestCase):
             m_player.matched = set()
 
         # noinspection PyTypeChecker
-        lib_round._calculate_wins(self.matches)
-        # noinspection PyTypeChecker
-        lib_round._calculate_matched(self.matches)
+        lib_league.calculate_matches_result(self.league, self.matches)
 
     def test_calculate_wins(self):
         self.assertEqual(self.players[1].wins, 4)
@@ -119,9 +117,9 @@ class Tests(TestCase):
             players.add(Player.objects.create(league=league, name='p{:2d}'.format(i)))
 
         rounds = set()
-        matches = set()
+        matches = list()
         for round_idx in range(1, 12):
-            this_matches = lib_round._get_matches_of_new_round(players, matches)
+            this_matches = lib_round._get_matches_of_new_round(league)
             if this_matches is None:
                 break
 
@@ -139,14 +137,13 @@ class Tests(TestCase):
                 match = Match.objects.create(league=league, round=the_round,
                                              player1=winner, player2=loser,
                                              score1=1, score2=0)
-                matches.add(match)
+                matches.append(match)
 
         for m_player in self.players.values():
             m_player.wins = 0
             m_player.matched = set()
 
-        lib_round._calculate_wins(matches)
-        lib_round._calculate_matched(matches)
+        lib_league.calculate_matches_result(league, matches)
 
         for player in sorted(players, key=lambda p: (p.wins, p.name), reverse=True):
             print('Player #{} {} wins / {}'.format(player.name, player.wins, len(player.matched)))

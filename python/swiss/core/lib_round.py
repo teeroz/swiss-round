@@ -1,54 +1,43 @@
 import random
-from typing import Set, Optional
+from typing import Set, Optional, List
 
+from swiss.core import lib_league
 from swiss.models.league import League
 from swiss.models.player import Player
 from swiss.models.round import Round
 from swiss.models.match import Match
 
 
-def start_new_round(league: League) -> Optional[Round]:
-    players = league.players.all()
-    rounds = league.rounds.all()
-    matches = league.matches.all()
+def start_new_round(m_league: League) -> Optional[Round]:
+    rounds = m_league.rounds.all()
 
-    # matches 플레이어 초기화
-    dict_players = {}
-    for player in players:
-        dict_players[player.id] = player
-    for match in matches:
-        match.player1 = dict_players[match.player1_id]
-        match.player2 = dict_players[match.player2_id]
-
-    new_matches = _get_matches_of_new_round(players, matches)
+    new_matches = _get_matches_of_new_round(m_league)
     if new_matches is None:
         return None
 
-    m_round = Round.objects.create(league=league, no=len(rounds)+1)
+    m_round = Round.objects.create(league=m_league, no=len(rounds) + 1)
 
     for player1, player2 in new_matches:
-        Match.objects.create(league=league, round=m_round, player1=player1, player2=player2,
+        Match.objects.create(league=m_league, round=m_round, player1=player1, player2=player2,
                              score1=1 if player2.is_ghost is True else 0)
 
     return m_round
 
 
-def _get_matches_of_new_round(players: Set[Player], matches: Set[Match]) -> Optional[list]:
+def _get_matches_of_new_round(m_league: League) -> Optional[list]:
     result = []
 
-    for m_player in players:
-        m_player.wins = 0
-        m_player.matched = set()
-
-    _calculate_wins(matches)
+    # matches 플레이어 초기화
+    players, matches = m_league.get_players_and_matches()     # type: List[Player], List[Match]
+    lib_league.calculate_matches_result(m_league, matches)
 
     # 부전승은 항상 제일 마지막에 나오도록 하기 위함
     for m_player in players:
         if m_player.is_ghost:
             m_player.wins = -1
+            m_player.score = -1
 
     _calculate_family(players)
-    _calculate_matched(matches)
 
     # 드랍한 사용자 제외
     candidates = {player for player in players if player.is_dropped is False}
@@ -102,31 +91,13 @@ def _get_matches_of_new_round(players: Set[Player], matches: Set[Match]) -> Opti
     return result
 
 
-def _calculate_wins(matches: Set[Match]) -> None:
-    for m_match in matches:
-        m_match.player1.wins = 0
-        m_match.player2.wins = 0
-
-    for m_match in matches:
-        if m_match.score1 > m_match.score2:
-            m_match.player1.wins += 1
-        elif m_match.score2 > m_match.score1:
-            m_match.player2.wins += 1
-
-
-def _calculate_family(players: Set[Player]) -> None:
+def _calculate_family(players: List[Player]) -> None:
     for m_player in players:
         if not m_player.is_family:
             continue
         family_member_ids = m_player.family.values_list('id', flat=True)
         family = {p for p in players if (p.id in family_member_ids)}
         m_player.matched.update(family)
-
-
-def _calculate_matched(matches: Set[Match]) -> None:
-    for m_match in matches:
-        m_match.player1.matched.add(m_match.player2)
-        m_match.player2.matched.add(m_match.player1)
 
 
 def _choose_first_player(players: Set[Player]) -> Optional[Player]:
