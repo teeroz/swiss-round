@@ -75,6 +75,7 @@ DATABASES = {
     }
 }
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -115,8 +116,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CORS_ORIGIN_WHITELIST = (
-    'localhost:8080',
-    'swiss.teeroz.net:8000',
-    'swiss.teeroz.net',
-    'teeroz.cafe24.com'
+    'http://localhost:8080',
+    'http://swiss.teeroz.net:8000',
+    'http://swiss.teeroz.net',
+    'http://teeroz.cafe24.com'
 )
