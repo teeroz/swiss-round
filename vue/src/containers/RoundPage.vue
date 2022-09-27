@@ -23,8 +23,7 @@
           <div class="d-flex justify-content-center">
             <div class="col-6 text-right">
               <span @click="goPlayerPage(match.player1)">
-                <template v-if="league.win_mode === 'half'"><small>{{ match.player1.score }}점</small> {{ match.player1.name }} </template>
-                <template v-else><small>{{ match.player1.wins }}승</small> {{ match.player1.name }} </template>
+                <template><small>{{ match.player1.score }}점</small> {{ match.player1.name }} </template>
               </span>
 
               <template v-if="league.win_mode === 'half'">
@@ -80,8 +79,7 @@
               </template>
 
               <span @click="goPlayerPage(match.player2)">
-                <template v-if="league.win_mode === 'half'"> {{ match.player2.name }} <small>{{ match.player2.score }}점</small></template>
-                <template v-else> {{ match.player2.name }} <small>{{ match.player2.wins }}승</small></template>
+                <template> {{ match.player2.name }} <small>{{ match.player2.score }}점</small></template>
               </span>
             </div>
           </div>

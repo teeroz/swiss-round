@@ -19,7 +19,7 @@
       <div class="row form-group">
         <label for="exampleInputTie">순위</label>
         <select class="form-control mb-1" disabled>
-          <option>{{ league.win_mode ? '점수' : '승수' }}</option>
+          <option>{{ '점수' }}</option>
         </select>
         <select class="form-control my-1" disabled>
           <option>{{ league.ranking_criteria ? '승자승원칙' : '부크홀츠' }}</option>

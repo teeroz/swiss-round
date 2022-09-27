@@ -62,12 +62,26 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <span>승패</span>
               <span class="text-muted">
-                <template v-if="player.wins > 0">{{ player.wins }}승 </template>
+                <template v-if="player.wins > 0">
+                  <template v-if="league.win_mode === 'half'">
+                    {{ player.wins - player.half_wins }}<span style="font-size: 12px;" v-if="player.half_wins > 0"> / {{ player.half_wins }} </span>승
+                  </template>
+                  <template v-else>
+                    {{ player.wins }}승
+                  </template>
+                </template>
                 <template v-if="player.draws > 0">{{ player.draws }}무 </template>
-                <template v-if="player.loses > 0">{{ player.loses }}패 </template>
+                <template v-if="player.loses > 0">
+                  <template v-if="league.win_mode === 'half'">
+                    {{ player.loses - player.half_loses }}<span style="font-size: 12px;" v-if="player.half_loses > 0"> / {{ player.half_loses }} </span>패
+                  </template>
+                  <template v-else>
+                    {{ player.loses }}패
+                  </template>
+                </template>
               </span>
             </li>
-            <li v-if="league.win_mode == 'half'" class="list-group-item d-flex justify-content-between align-items-center">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
               <span>점수</span>
               <span class="text-muted">{{ player.score }}점</span>
             </li>
@@ -102,33 +116,32 @@
               <span @click="goPlayerPage(match.opponent)">
                 <small>vs</small> {{ match.opponent.name }} 
                 <small class="text-muted">
-                  <template v-if="league.win_mode == 'half'">{{ match.opponent.score }}점</template>
-                  <template v-else>{{ match.opponent.wins }}승</template>
+                  <template>{{ match.opponent.score }}점</template>
                 </small>
               </span>
 
-              <button v-if="league.win_mode == 'half'"
+              <button v-if="league.win_mode === 'half'"
                 type="button"
                 class="btn btn-sm ml-1"
-                :class="{'btn-secondary': match.result == 'D',
-                         'btn-primary': match.result == 'W' && !match.half_win,
-                         'btn-outline-primary': match.result == 'W' && match.half_win,
-                         'btn-danger': match.result == 'L' && !match.half_win,
-                         'btn-outline-danger': match.result == 'L' && match.half_win}"
+                :class="{'btn-secondary': match.result === 'D',
+                         'btn-primary': match.result === 'W' && !match.half_win,
+                         'btn-outline-primary': match.result === 'W' && match.half_win,
+                         'btn-danger': match.result === 'L' && !match.half_win,
+                         'btn-outline-danger': match.result === 'L' && match.half_win}"
                 >
-                <template v-if="match.result == 'W'">{{ match.half_win ? '½' : '' }}승</template>
-                <template v-else-if="match.result == 'L'">{{ match.half_win ? '½' : '' }}패</template>
+                <template v-if="match.result === 'W'">{{ match.half_win ? '½' : '' }}승</template>
+                <template v-else-if="match.result === 'L'">{{ match.half_win ? '½' : '' }}패</template>
                 <template v-else>무</template>
               </button>
               <button v-else
                 type="button" 
                 class="btn btn-sm ml-1"
-                :class="{'btn-secondary': match.result == 'D', 
-                         'btn-primary': match.result == 'W', 
-                         'btn-danger': match.result == 'L'}"
+                :class="{'btn-secondary': match.result === 'D',
+                         'btn-primary': match.result === 'W',
+                         'btn-danger': match.result === 'L'}"
                 >
-                <template v-if="match.result == 'W'">승</template>
-                <template v-else-if="match.result == 'L'">패</template>
+                <template v-if="match.result === 'W'">승</template>
+                <template v-else-if="match.result === 'L'">패</template>
                 <template v-else>무</template>
               </button>
             </li>

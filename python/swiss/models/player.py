@@ -42,8 +42,10 @@ class Player(models.Model):
 
     def initialize_results(self) -> None:
         self.wins = 0
+        self.half_wins = 0
         self.draws = 0
         self.loses = 0
+        self.half_loses = 0
         self.strikes_count = 0
         self.strikes_start = 0
         self.max_strikes_count = 0
@@ -64,6 +66,9 @@ class Player(models.Model):
 
         self.matched_wins.add(opponent)
 
+    def increase_half_wins(self) -> None:
+        self.half_wins += 1
+
     def increase_draws(self) -> None:
         self.draws += 1
         self.strikes_count = 0
@@ -74,6 +79,9 @@ class Player(models.Model):
 
         self.matched_loses.add(opponent)
 
+    def increase_half_loses(self) -> None:
+        self.half_loses += 1
+
     def increase_score(self, score) -> None:
         self.score += score
 
@@ -83,15 +91,9 @@ class Player(models.Model):
 
     def get_ranking_first(self, league: League) -> tuple:
         if league.ranking_criteria == 'winner':
-            if league.win_mode == 'half':
-                return not self.is_ghost, self.score
-            else:
-                return not self.is_ghost, self.wins * League.win_score + self.draws
+            return not self.is_ghost, self.score
         else:
-            if league.win_mode == 'half':
-                return not self.is_ghost, self.score, self.buchholz
-            else:
-                return not self.is_ghost, self.wins * League.win_score + self.draws, self.buchholz
+            return not self.is_ghost, self.score, self.buchholz
 
     def get_ranking_second(self, league: League) -> tuple:
         if league.ranking_criteria == 'winner':
@@ -103,8 +105,10 @@ class Player(models.Model):
         to_dict = model_to_dict(self, exclude="family")
         to_dict.update({
             'wins': self.wins,
+            'half_wins': self.half_wins,
             'draws': self.draws,
             'loses': self.loses,
+            'half_loses': self.half_loses,
             'max_strikes_count': self.max_strikes_count,
             'max_strikes_start': self.max_strikes_start,
             'buchholz': self.buchholz,

@@ -31,9 +31,15 @@ def calculate_matches_result(m_league: League, matches: List[Match]) -> None:
         if match.score1 > match.score2:
             match.player1.increase_wins(match.player2)
             match.player2.increase_loses(match.player1)
+            if match.score1 == 1:
+                match.player1.increase_half_wins()
+                match.player2.increase_half_loses()
         elif match.score2 > match.score1:
             match.player2.increase_wins(match.player1)
             match.player1.increase_loses(match.player2)
+            if match.score2 == 1:
+                match.player2.increase_half_wins()
+                match.player1.increase_half_loses()
         else:
             match.player2.increase_draws()
             match.player1.increase_draws()
@@ -54,9 +60,9 @@ def calculate_matches_result(m_league: League, matches: List[Match]) -> None:
                 match.player2.increase_score(3)
         else:
             if match.score1 > match.score2:
-                match.player1.increase_score(3)
+                match.player1.increase_score(2)
             elif match.score2 > match.score1:
-                match.player2.increase_score(3)
+                match.player2.increase_score(2)
             else:
                 match.player1.increase_score(1)
                 match.player2.increase_score(1)

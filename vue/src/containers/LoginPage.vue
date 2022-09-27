@@ -39,7 +39,11 @@
           <h5 class="card-title">변경사항</h5>
           <p class="card-text mb-4">
             <small>
-              <strong>v1.5.0</strong>&nbsp;&nbsp;<span class="text-muted">at 2022.08.22</span><br />
+              <strong>v1.6.0</strong>&nbsp;&nbsp;<span class="text-muted">at 2022.09.27</span><br />
+              - 순위 계산을 모두 점수제로 변경합니다. 일반적으로 승 2점 / 무 1점 / 패 0점으로 처리합니다.<br />
+            </small>
+            <small>
+              <strong>v1.5.0</strong>&nbsp;&nbsp;<span class="text-muted">at 2022.09.22</span><br />
               - 장기의 점수승을 지원하기 위하여 판정승(1/2승) 기능을 추가하였습니다. 이 모드에서는 완승 7점 / 점수승 4점 / 점수패 2점 / 완패 0점의 점수를 부여하며,
               순위 결정할 때 점수를 최우선순위로 합니다.<br />
               - 순위 결정할 때 승자승원칙을 우선으로 할 수 있도록 승자승원칙 우선 기능을 추가하였습니다.
