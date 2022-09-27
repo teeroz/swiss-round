@@ -16,8 +16,10 @@ class Player(models.Model):
     modify_dt = models.DateTimeField(auto_now=True)
 
     wins = 0
+    half_wins = 0
     draws = 0
     loses = 0
+    half_loses = 0
     strikes_count = 0
     strikes_start = 0
     max_strikes_count = 0
