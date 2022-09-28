@@ -56,22 +56,13 @@
               </span>
             </div>
             <small class="text-muted" v-if="player.wins + player.draws + player.loses > 0">
-              <template v-if="player.wins > 0">
-                <template v-if="league.win_mode === 'half'">
-                  {{ player.wins - player.half_wins }}<span style="font-size: 11px;" v-if="player.half_wins > 0">/{{ player.half_wins }}</span>승
-                </template>
-                <template v-else>
-                  {{ player.wins }}승
-                </template>
+              <template v-if="league.win_mode === 'half'">
+                승 {{ player.wins - player.half_wins }}-{{ player.half_wins }}-{{ player.draws }}-{{player.half_loses}}-{{ player.loses - player.half_loses }} 패
               </template>
-              <template v-if="player.draws > 0">{{ player.draws }}무 </template>
-              <template v-if="player.loses > 0">
-                <template v-if="league.win_mode === 'half'">
-                  <span style="font-size: 11px;" v-if="player.half_loses > 0">{{ player.half_loses }}/</span>{{ player.loses - player.half_loses }}패
-                </template>
-                <template v-else>
-                  {{ player.loses }}패
-                </template>
+              <template v-else>
+                <template v-if="player.wins > 0">{{ player.wins }}승 </template>
+                <template v-if="player.draws > 0">{{ player.draws }}무 </template>
+                <template v-if="player.loses > 0">{{ player.loses }}패</template>
               </template>
               <template><span style="color: #CFCFCF;"> | </span> {{ player.score }}점</template>
               <template v-if="league.ranking_criteria === 'winner'">
@@ -137,22 +128,13 @@
                   <td>{{ player.ranking }} 위</td>
                   <td>{{ player.name }}</td>
                   <td>
-                    <template v-if="player.wins > 0">
-                      <template v-if="league.win_mode === 'half'">
-                        {{ player.wins - player.half_wins }}<span style="font-size: 18px;" v-if="player.half_wins > 0"> / {{ player.half_wins }} </span>승
-                      </template>
-                      <template v-else>
-                        {{ player.wins }}승
-                      </template>
+                    <template v-if="league.win_mode === 'half'">
+                      승 {{ player.wins - player.half_wins }}-{{ player.half_wins }}-{{ player.draws }}-{{player.half_loses}}-{{ player.loses - player.half_loses }} 패
                     </template>
-                    <template v-if="player.draws > 0">&nbsp;{{ player.draws }}무</template>
-                    <template v-if="player.loses > 0">
-                      <template v-if="league.win_mode === 'half'">
-                        <span style="font-size: 18px;" v-if="player.half_loses > 0">{{ player.half_loses }} / </span>{{ player.loses - player.half_loses }}패
-                      </template>
-                      <template v-else>
-                        {{ player.loses }}패
-                      </template>
+                    <template v-else>
+                      <template v-if="player.wins > 0">{{ player.wins }}승 </template>
+                      <template v-if="player.draws > 0">{{ player.draws }}무 </template>
+                      <template v-if="player.loses > 0">{{ player.loses }}패</template>
                     </template>
                   </td>
                   <td>{{ player.score }} 점</td>
