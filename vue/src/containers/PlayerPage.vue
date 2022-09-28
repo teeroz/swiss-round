@@ -64,16 +64,16 @@
               <span class="text-muted">
                 <template v-if="player.wins > 0">
                   <template v-if="league.win_mode === 'half'">
-                    {{ player.wins - player.half_wins }}<span style="font-size: 12px;" v-if="player.half_wins > 0"> / {{ player.half_wins }} </span>승
+                    {{ player.wins - player.half_wins }} <span style="font-size: 14px;" v-if="player.half_wins > 0">/ {{ player.half_wins }} </span>승
                   </template>
                   <template v-else>
                     {{ player.wins }}승
                   </template>
                 </template>
-                <template v-if="player.draws > 0">{{ player.draws }}무 </template>
+                <template v-if="player.draws > 0">{{ player.draws }} 무 </template>
                 <template v-if="player.loses > 0">
                   <template v-if="league.win_mode === 'half'">
-                    {{ player.loses - player.half_loses }}<span style="font-size: 12px;" v-if="player.half_loses > 0"> / {{ player.half_loses }} </span>패
+                    <span style="font-size: 14px;" v-if="player.half_loses > 0">{{ player.half_loses }} / </span>{{ player.loses - player.half_loses }} 패
                   </template>
                   <template v-else>
                     {{ player.loses }}패
