@@ -14,4 +14,5 @@ urlpatterns = [
     path('api/league/<int:league_id>/round', views.v_round, name='round'),
     path('api/league/<int:league_id>/round/<int:round_id>', views.v_a_round, name='a_round'),
     path('api/league/<int:league_id>/round/<int:round_id>/match/<int:match_id>', views.v_a_match, name='a_match'),
+    path('api/league/<int:league_id>/tournament', views.v_tournament, name='tournament'),
 ]

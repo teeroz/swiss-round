@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from swiss.core import lib_league, lib_user
 from swiss.core import lib_player
 from swiss.core import lib_round
+from swiss.core import lib_tournament
 from swiss.models.league import League
 from swiss.models.match import Match
 from swiss.models.player import Player
@@ -94,9 +95,9 @@ def v_auth_login(request: HttpRequest) -> HttpResponse:
         data = json.loads(request.body.decode('utf-8'))
         lib_user.register('local', data['username'], data['username'], 0)
         token_info = {
-            "access_token": data['username'], 
-            "token_type": "bearer", 
-            "expires_in": 0, 
+            "access_token": data['username'],
+            "token_type": "bearer",
+            "expires_in": 0,
             "name": data['username']
         }
         return JsonResponse(token_info)
@@ -168,21 +169,23 @@ def get_league(user: User, league_id: int) -> dict:
 
     return {'league': model_to_dict(m_league),
             'players': __get_players(m_league),
-            'rounds': __get_rounds(m_league)}
+            'rounds': __get_rounds(m_league),
+            'tournaments': __get_tournament_rounds(m_league)}
 
 
 def __get_players(m_league: League) -> List[dict]:
-    players, matches = m_league.get_players_and_matches()  # type: List[Player], List[Match]
-    lib_league.calculate_matches_result(m_league, matches)
-    lib_league.calculate_rankings(m_league, players, matches)
+    players = lib_league.get_players_order_by_ranking(m_league)  # type: List[Player]
 
-    players = sorted(players, key=lambda p: p.ranking)  # type: List[Player]
-
-    return [m_player.to_dict() for m_player in players if m_player.is_ghost is False]
+    return [m_player.to_dict() for m_player in players]
 
 
 def __get_rounds(m_league: League) -> List[dict]:
-    rounds = m_league.rounds.order_by('-pk')
+    rounds = m_league.rounds.filter(tournament_stage=0).order_by('-pk')
+    return [model_to_dict(m_round) for m_round in rounds]
+
+
+def __get_tournament_rounds(m_league: League) -> List[dict]:
+    rounds = m_league.rounds.filter(tournament_stage__gt=0).order_by('-pk')
     return [model_to_dict(m_round) for m_round in rounds]
 
 
@@ -411,3 +414,26 @@ def update_score(league_id: int, round_id: int, match_id: int, data: dict) -> di
     match.save()
 
     return get_round(league_id, round_id)
+
+
+@csrf_exempt
+def v_tournament(request: HttpRequest, league_id: int) -> HttpResponse:
+    user = lib_user.get_user(request)
+    if user is None:
+        return HttpResponseForbidden('Invalid authorization')
+
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        return JsonResponse(start_new_tournament(user, league_id, data['stage']))
+
+    return HttpResponseBadRequest('The {} method is not supported.'.format(request.method))
+
+
+def start_new_tournament(user: User, league_id: int, stage: int) -> dict:
+    m_league = get_object_or_404(League, pk=league_id, user_id=user.id)
+    m_round = lib_tournament.start_new_tournament(m_league, stage)
+
+    if m_round is None:
+        return {'id': None}
+
+    return model_to_dict(m_round)

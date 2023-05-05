@@ -39,6 +39,17 @@
             </span>
           </span>
         </li>
+        <li class="nav-item" @click="showTournaments">
+          <span class="nav-link" :class="{active: mode === 'TOURNAMENTS'}">
+            토너먼트
+            <span
+                class="badge badge-pill"
+                :class="{'badge-primary': mode === 'TOURNAMENTS', 'badge-secondary': mode !== 'TOURNAMENTS'}"
+                >
+              {{ tournaments.length }}
+            </span>
+          </span>
+        </li>
       </ul>
 
       <div class="list-group" v-if="mode === 'PLAYERS'">
@@ -105,6 +116,26 @@
           <i class="fas fa-trophy"></i> <strong><span> 새 라운드 시작하기</span></strong>
         </span>
       </div>
+
+      <div class="list-group" v-if="mode === 'TOURNAMENTS'">
+        <router-link
+           v-for="tournament in tournaments"
+           :to="{name: 'tournament', params: {league_id: tournament.league, round_id: tournament.id}}"
+           :key="tournament.id"
+           class="list-group-item list-group-item-action border-left-0 border-right-0"
+           >
+          {{ tournament.tournament_stage === 2 ? '결승' : (tournament.tournament_stage === 4 ? '준결승' : tournament.tournament_stage + '강') }}
+        </router-link>
+
+        <router-link
+           v-if="tournaments.length <= 0"
+           :to="{name: 'tournamentCreate', params: {league_id: league.id, player_num: players.length}}"
+           class="list-group-item list-group-item-action border-left-0 border-right-0 text-center text-primary"
+           :class="{'mt-1': tournaments.length <= 0}"
+           >
+          <i class="fas fa-user-plus"></i> <strong><span> 새 토너먼트 시작하기</span></strong>
+        </router-link>
+      </div>
     </the-loading>
 
     <div style="display: none;">
@@ -165,6 +196,7 @@ export default {
       league: { id: 0, title: '' },
       players: [],
       rounds: [],
+      tournaments: [],
       mode: mode
     }
   },
@@ -175,6 +207,7 @@ export default {
         this.league = res.data.league
         this.players = res.data.players
         this.rounds = res.data.rounds
+        this.tournaments = res.data.tournaments
         this.$refs.loading.stop()
       })
   },
@@ -210,6 +243,11 @@ export default {
     showRounds: function () {
       this.$router.replace({ name: 'league', params: { league_id: this.$route.params.league_id }, query: { mode: 'ROUNDS' } })
       this.mode = 'ROUNDS'
+    },
+
+    showTournaments: function () {
+      this.$router.replace({ name: 'league', params: { league_id: this.$route.params.league_id }, query: { mode: 'TOURNAMENTS' } })
+      this.mode = 'TOURNAMENTS'
     },
 
     startNewRound: function () {

@@ -9,7 +9,7 @@ from swiss.models.match import Match
 
 
 def start_new_round(m_league: League) -> Optional[Round]:
-    rounds = m_league.rounds.all()
+    rounds = m_league.rounds.filter(tournament_stage=0)
 
     new_matches = _get_matches_of_new_round(m_league)
     if new_matches is None:

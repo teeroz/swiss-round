@@ -118,3 +118,13 @@ def calculate_rankings(league: League, players: List[Player], matches: List[Matc
                             reverse=True)
     for idx, m_player in enumerate(sorted_players):
         m_player.ranking = idx+1
+
+
+def get_players_order_by_ranking(m_league: League) -> List[Player]:
+    players, matches = m_league.get_players_and_matches()  # type: List[Player], List[Match]
+    calculate_matches_result(m_league, matches)
+    calculate_rankings(m_league, players, matches)
+
+    players = sorted(players, key=lambda p: p.ranking)  # type: List[Player]
+
+    return [m_player for m_player in players if m_player.is_ghost is False]
