@@ -58,7 +58,9 @@ export default {
     submit: function () {
       this.$axios.swiss.post(`league/${this.$route.params.league_id}/tournament`,
                             { 'stage': this.selectedStage })
-        .then(() => this.$router.go(-1))
+        .then(res => {
+          this.$router.push({ name: 'tournament', params: { league_id: this.$route.params.league_id, round_id: res.data.id } })
+        })
     }
   }
 }

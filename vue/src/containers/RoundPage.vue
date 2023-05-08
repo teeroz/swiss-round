@@ -7,8 +7,10 @@
         </button>
         <div class="dropdown-menu" style="right: 0; left: auto;">
           <button type="button" class="dropdown-item" @click="printRound">라운드별 프린트</button>
-          <div class="dropdown-divider"></div>
-          <button type="button" class="dropdown-item" @click="remove">삭제</button>
+          <template v-if="is_last">
+            <div class="dropdown-divider"></div>
+            <button type="button" class="dropdown-item" @click="remove">삭제</button>
+          </template>
         </div>
       </div>
     </the-navbar>
@@ -87,7 +89,8 @@
       </div>
 
       <div class="text-center my-3">
-        <button 
+        <button
+          v-if="is_last"
           type="button" 
           class="btn" 
           :class="{'btn-primary': isComplete, 'btn-secondary': !isComplete}"
@@ -144,6 +147,7 @@ export default {
     return {
       league: { win_mode: '' },
       round: { no: '' },
+      is_last: false,
       matches: [],
       matchesByTable: [],
       isComplete: false
@@ -164,6 +168,7 @@ export default {
 
         this.league = res.data.league
         this.round = res.data.round
+        this.is_last = res.data.is_last
         this.matches = res.data.matches
         this.checkIsComplete()
         this.$refs.loading.stop()

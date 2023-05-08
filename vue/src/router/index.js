@@ -10,6 +10,7 @@ import PlayerEditBasicPage from '@/containers/PlayerEditBasicPage'
 import PlayerEditFamilyPage from '@/containers/PlayerEditFamilyPage'
 import PlayerPage from '@/containers/PlayerPage'
 import RoundPage from '@/containers/RoundPage'
+import TournamentPage from '@/containers/TournamentPage'
 import TournamentCreatePage from '@/containers/TournamentCreatePage'
 
 Vue.use(Router)
@@ -65,6 +66,11 @@ export default new Router({
       path: '/league/:league_id/round/:round_id',
       name: 'round',
       component: RoundPage
+    },
+    {
+      path: '/league/:league_id/tournament/:round_id',
+      name: 'tournament',
+      component: TournamentPage
     },
     {
       path: '/league/:league_id/tournament/create',

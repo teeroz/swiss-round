@@ -39,6 +39,10 @@
           <h5 class="card-title">변경사항</h5>
           <p class="card-text mb-4">
             <small>
+              <strong>v1.7.0</strong>&nbsp;&nbsp;<span class="text-muted">at 2023.05.08</span><br />
+              - 토너먼트 기능을 추가하였습니다. 스위스 리그를 완료한 후, 토너먼트를 만들면 리그 순위에 기반하여 토너먼트 대진표를 작성해줍니다.<br />
+            </small>
+            <small>
               <strong>v1.6.0</strong>&nbsp;&nbsp;<span class="text-muted">at 2022.09.27</span><br />
               - 순위 계산을 모두 점수제로 변경합니다. 일반적으로 승 2점 / 무 1점 / 패 0점으로 처리합니다.<br />
             </small>
@@ -72,6 +76,7 @@
               스위스 라운드 방식의 리그를 위한 비영리 목적의 어플입니다. 
               사설 리그를 운영하기 위하여 만들었으나 필요한 분들을 위하여 공개하였습니다.
               사용하면서 궁금한 점이나 개선에 대한 의견이 있으면 이메일로 연락주세요. <br />
+              후원 계좌 : 카카오뱅크 7979-7979-328 신종훈 <br />
               <span class="text-muted">by prophet75 at gmail.com</span>
             </small>
           </p>

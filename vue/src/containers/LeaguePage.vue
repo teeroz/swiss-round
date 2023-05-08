@@ -124,7 +124,7 @@
            :key="tournament.id"
            class="list-group-item list-group-item-action border-left-0 border-right-0"
            >
-          {{ tournament.tournament_stage === 2 ? '결승' : (tournament.tournament_stage === 4 ? '준결승' : tournament.tournament_stage + '강') }}
+          {{ tournament.tournament_stage === 2 ? '결승' : tournament.tournament_stage + '강' }}
         </router-link>
 
         <router-link

@@ -362,10 +362,17 @@ def v_a_round(request: HttpRequest, league_id: int, round_id: int) -> HttpRespon
 def get_round(league_id: int, round_id: int) -> dict:
     m_league = get_object_or_404(League, pk=league_id)
     m_round = get_object_or_404(Round, pk=round_id, league_id=league_id)
+    if m_round.tournament_stage > 0:
+        current_stage = m_league.rounds.filter(tournament_stage__gt=0).order_by('tournament_stage')[0].tournament_stage
+        is_last = m_round.tournament_stage == current_stage
+    else:
+        current_no = m_league.rounds.filter(tournament_stage=0).order_by('-no')[0].no
+        is_last = m_round.no == current_no
 
     return {
         'league': model_to_dict(m_league),
         'round': model_to_dict(m_round),
+        'is_last': is_last,
         'matches': __get_matches(m_league, m_round)
     }
 
@@ -374,6 +381,7 @@ def __get_matches(m_league: League, m_round: Round) -> List[dict]:
     players, matches = m_round.league.get_players_and_matches()  # type: List[Player], List[Match]
     # noinspection PyTypeChecker
     lib_league.calculate_matches_result(m_league, [m for m in matches if m.round_id < m_round.id])
+    lib_league.calculate_rankings(m_league, players, matches)
 
     result = []
     matches = [m for m in matches if m.round_id == m_round.id]
@@ -424,7 +432,7 @@ def v_tournament(request: HttpRequest, league_id: int) -> HttpResponse:
 
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        return JsonResponse(start_new_tournament(user, league_id, data['stage']))
+        return JsonResponse(start_new_tournament(user, league_id, data['stage'] if 'stage' in data else 0))
 
     return HttpResponseBadRequest('The {} method is not supported.'.format(request.method))
 

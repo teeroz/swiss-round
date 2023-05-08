@@ -25,6 +25,9 @@ def calculate_matches_result(m_league: League, matches: List[Match]) -> None:
         match.player2.initialize_results()
 
     for match in matches:
+        if match.round.tournament_stage > 0:
+            continue
+
         match.player1.matched.add(match.player2)
         match.player2.matched.add(match.player1)
 
@@ -94,6 +97,9 @@ def calculate_rankings(league: League, players: List[Player], matches: List[Matc
 
             w_matches = (m for m in matches if (m.player1 in ak_players and m.player2 in ak_players))
             for m_match in w_matches:
+                if m_match.round.tournament_stage > 0:
+                    continue
+
                 if m_match.score1 > m_match.score2:
                     m_match.player1.all_kill += 1
                 elif m_match.score2 > m_match.score1:
